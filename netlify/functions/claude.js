@@ -22,7 +22,7 @@ exports.handler = async function (event) {
   if (!system || !message) {
     return { statusCode: 400, body: JSON.stringify({ error: "Request must include 'system' and 'message'." }) };
   }
-  if (typeof message !== "string" || message.length > 6000) {
+  if (typeof message !== "string" || message.length > 24000) {
     return { statusCode: 400, body: JSON.stringify({ error: "Message too long." }) };
   }
 
