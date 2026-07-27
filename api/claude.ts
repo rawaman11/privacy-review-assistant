@@ -25,9 +25,10 @@ export default async function handler(req: any, res: any) {
   }
 
   // Basic abuse guard: this endpoint is public once deployed, so cap input
-  // size. This is not real rate limiting — see the deployment notes in
-  // README.deploy.md for what a hardened version would add.
-  if (typeof message !== "string" || message.length > 6000) {
+  // size. Note the corpus (17 clauses) is embedded in the findings-generation
+  // message, so this cap must comfortably fit corpus + user input, not just
+  // user input alone — that's what the earlier, much lower cap got wrong.
+  if (typeof message !== "string" || message.length > 24000) {
     res.status(400).json({ error: "Message too long." });
     return;
   }
