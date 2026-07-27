@@ -12,7 +12,7 @@ import { callClaudeJSON } from "../lib/anthropicClient";
 
 type Screen = "review" | "log" | "corpus";
 type InputMode = "structured" | "freetext";
-type FindingVariant = "grounded" | "low-confidence" | "not-covered";
+type FindingVariant = "grounded" | "low-confidence" | "not-covered" | "error";
 type FindingStatus = "pending" | "accepted" | "dismissed";
 type DismissReason = "not-clause-relevant" | "false-positive" | "already-handled";
 type FieldKey = "dataCollected" | "purpose" | "thirdParties" | "retention";
@@ -123,7 +123,7 @@ async function generateFindingsLLM(
     raw = await callClaudeJSON<RawFinding[]>(FINDINGS_SYSTEM_PROMPT, userMessage);
   } catch (e) {
     return [{
-      id: uid(), variant: "not-covered", category: "Analysis unavailable",
+      id: uid(), variant: "error", category: "Analysis unavailable",
       explanation: e instanceof Error ? e.message : "Could not reach the model.",
       regulation: "—", status: "pending", step, reviewId,
     }];
@@ -238,6 +238,8 @@ function VariantBadge({ variant, category }: { variant: FindingVariant; category
       ? "bg-red-50 text-red-700 border border-red-200"
       : variant === "low-confidence"
       ? "bg-amber-50 text-amber-700 border border-amber-200"
+      : variant === "error"
+      ? "bg-transparent text-gray-400 border border-dashed border-gray-300"
       : "bg-gray-100 text-gray-500 border border-gray-200";
   return (
     <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${cls}`}>
@@ -289,7 +291,7 @@ function FindingCard({
       {finding.citation && (
         <p className="text-xs text-muted-foreground font-medium mb-3">{finding.citation}</p>
       )}
-      {finding.variant !== "not-covered" && finding.status === "pending" && (
+      {finding.variant !== "not-covered" && finding.variant !== "error" && finding.status === "pending" && (
         <div className="flex gap-2">
           <button
             onClick={onAccept}
@@ -312,6 +314,11 @@ function FindingCard({
         >
           <Send size={11} /> Send to legal
         </button>
+      )}
+      {finding.variant === "error" && (
+        <p className="text-xs text-gray-400 italic">
+          Not a finding — the model couldn't be reached. Nothing to accept or dismiss here.
+        </p>
       )}
     </div>
   );
