@@ -639,11 +639,12 @@ function StructuredWizard({
     setStep(next);
   };
 
-  const canNext =
-    step === 1 ? tags.length > 0 :
-    step === 2 ? purpose.trim().length > 0 :
-    step === 3 ? thirdParties.trim().length > 0 :
-    retention.trim().length > 0;
+  // Only step 1 is required — a flow needs at least one data type to review.
+  // Purpose, third parties, and retention can be genuinely blank for a real
+  // flow (no third-party sharing, retention not yet decided, etc.), and the
+  // findings generator already treats an empty field as "nothing to check"
+  // rather than an error, so there's no reason to force text here.
+  const canNext = step === 1 ? tags.length > 0 : true;
 
   return (
     <div className="flex flex-col gap-6">
