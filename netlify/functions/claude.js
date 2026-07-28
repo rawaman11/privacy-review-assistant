@@ -47,8 +47,16 @@ exports.handler = async function (event) {
       }),
     });
     const data = await upstream.json();
+
+    // Mirrors api/claude.ts — log upstream failures so the real cause shows up
+    // in the Netlify function logs, not just in the browser.
+    if (!upstream.ok) {
+      console.error("Anthropic error", upstream.status, JSON.stringify(data));
+    }
+
     return { statusCode: upstream.status, body: JSON.stringify(data) };
   } catch (e) {
+    console.error("Failed to reach Anthropic:", e);
     return { statusCode: 500, body: JSON.stringify({ error: e.message || "Unknown error calling Anthropic." }) };
   }
 };
