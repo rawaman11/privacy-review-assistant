@@ -56,8 +56,20 @@ export default async function handler(req: any, res: any) {
     });
 
     const data = await upstream.json();
+
+    // Log upstream failures so the real cause is visible in the Vercel
+    // function logs (Vercel dashboard → the project → Logs) without having to
+    // reproduce it through the UI. Anthropic's error shape is
+    // { type: "error", error: { type, message } } — the `type` is the useful
+    // part: authentication_error = bad key, invalid_request_error mentioning
+    // credit balance = billing, not_found_error = bad model string.
+    if (!upstream.ok) {
+      console.error("Anthropic error", upstream.status, JSON.stringify(data));
+    }
+
     res.status(upstream.status).json(data);
   } catch (e: any) {
+    console.error("Failed to reach Anthropic:", e);
     res.status(500).json({ error: e?.message ?? "Unknown error calling Anthropic." });
   }
 }
