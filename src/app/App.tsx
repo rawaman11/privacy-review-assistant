@@ -1255,8 +1255,10 @@ function ReviewLog({ dismissed }: { dismissed: Finding[] }) {
       ) : filtered.length === 0 ? (
         <p className="text-sm text-muted-foreground py-8 text-center">No findings match this filter.</p>
       ) : (
-        {/* Horizontal scroll rather than squashing the table on narrow screens —
-            reflow (WCAG 1.4.10) allows a data table to scroll in one direction. */}
+        /* Horizontal scroll rather than squashing the table on narrow screens —
+           reflow (WCAG 1.4.10) allows a data table to scroll in one direction.
+           Plain block comment, not {/* … *​/} — this is an expression position,
+           not a children position, so braces would be parsed as an object. */
         <div className="border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm min-w-[480px]">
             <caption className="sr-only">Dismissed findings, with the regulation cited and the reason given</caption>
