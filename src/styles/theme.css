@@ -14,7 +14,11 @@
   --secondary: #EDEDF2;
   --secondary-foreground: #1A1A24;
   --muted: #F0F0F4;
-  --muted-foreground: #71717A;
+  /* Darkened from #71717A for WCAG 2.1 AA. The old value measured 4.48:1 on
+     the #F6F6F9 background — just under the 4.5:1 required for normal text,
+     and this token is used for a lot of small 11-12px text. #6B6B74 measures
+     4.89:1 on the background and 5.28:1 on white cards. */
+  --muted-foreground: #6B6B74;
   --accent: #EDEDF2;
   --accent-foreground: #1A1A24;
   --destructive: #DC2626;
