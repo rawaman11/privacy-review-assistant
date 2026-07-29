@@ -1,0 +1,31 @@
+# Dependencies — reinstalled from package.json / package-lock.json, never committed
+node_modules/
+
+# Build output
+dist/
+build/
+.vite/
+
+# Secrets. ANTHROPIC_API_KEY lives in Vercel's environment variables, never in
+# the repo. If a .env file ever appears here it must not be committed — a key
+# pushed to GitHub is compromised the moment it lands, even in a private repo,
+# and even if the commit is deleted afterwards.
+.env
+.env.*
+!.env.example
+
+# Platform
+.vercel/
+.netlify/
+
+# macOS — Finder writes these into every folder it opens
+.DS_Store
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
